@@ -18,8 +18,8 @@ public class MainGUI {
 		System.out.println("kaishi");
 		StatisticOneDay oneDay = new StatisticOneDay();
 		DatabaseOperate dbo = DatabaseOperate.getInstance();
-		dbo.connectDatabase();
-		//dbo.createTable();
+//		dbo.connectDatabase();
+//		dbo.createTable();
 		WriteFile writeFile = new WriteFile();
 		StatisticMonthPerson smp = new StatisticMonthPerson();
 		
@@ -29,19 +29,19 @@ public class MainGUI {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-//				File file = new File(origin_file_path1);
-//				readOriginFile.readTXT(file);
-//				ArrayList<String> fileList = new ArrayList<String>();
-//				fileList = (ArrayList<String>) readOriginFile.getFilePath(origin_file_path2, fileList);
-//				for (String filePath : fileList) {
-//					readOriginFile.readFile(filePath);
-//				}
-//				System.out.println("readAllComplete");
-//				oneDay.statisticPersonOfDay();
-//				smp.processMonthPerson();
-//				tu.statisticTeam("北京"); 
-//				System.out.println("ProcessComplete");
-//				writeFile.mainWrite();
+				File file = new File(origin_file_path1);
+				//readOriginFile.readTXT(file);
+				ArrayList<String> fileList = new ArrayList<String>();
+				fileList = (ArrayList<String>) readOriginFile.getFilePath(origin_file_path2, fileList);
+				for (String filePath : fileList) {
+					readOriginFile.readFile(filePath);
+				}
+				System.out.println("readAllComplete");
+				oneDay.statisticPersonOfDay();
+				smp.processMonthPerson();
+				tu.statisticTeam("北京"); 
+				System.out.println("ProcessComplete");
+				writeFile.mainWrite();
 				ModifyRecords mr = new ModifyRecords();
 				mr.getExceptionData();
 				WriteCVS  writeCVS = new WriteCVS();

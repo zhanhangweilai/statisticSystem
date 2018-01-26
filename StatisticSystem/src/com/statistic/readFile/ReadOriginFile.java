@@ -38,9 +38,9 @@ public class ReadOriginFile {
 		if ("xlsx".equals(suffix)) {
 			readXLSXExcel(file);
 		} else if ("csv".equals(suffix)) {
-			//readCVSFile(file);
+			readCVSFile(file);
 		} else if ("txt".equals(suffix)){
-			//readTXT(file);
+			readTXT(file);
 		} else {
 			readCVSFile(file);
 		}
