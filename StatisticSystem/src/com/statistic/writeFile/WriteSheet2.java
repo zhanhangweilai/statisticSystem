@@ -89,7 +89,7 @@ public class WriteSheet2 {
 	
 	private void getData () {
 		ArrayList<PersonOfMonth> arrayList = new ArrayList< >();
-		String sql = "select person.name, person.place, person.team, person.start_time, person.end_time, person.onsite, month_person.actually_day_num,"
+		String sql = "select person.name, person.place, person.team, person.module, person.leader,person.start_time, person.end_time, person.onsite, month_person.actually_day_num,"
 				+ " month_person.workday_work_num, month_person.workday_num, month_person.absence_day, month_person.weekend_work_num, "
 				+ "month_person.total_overtime, month_person.workday_overtime, month_person.weekend_overtime from month_person, person "
 				+ "where month_person.name = person.name order by person.place desc";
@@ -130,10 +130,14 @@ public class WriteSheet2 {
 					
 				case 4:
 					cell.setCellStyle(style);
+					text.setString(pom.module);
+					cell.setCellValue(text.toString());
 					break;
 					
 				case 5:
 					cell.setCellStyle(style);
+					text.setString(pom.leader);
+					cell.setCellValue(text.toString());
 					break;
 					
 				case 6:

@@ -95,8 +95,8 @@ public class DatabaseOperate {
 				  +"`leave_start_time` DATETIME(1) NOT NULL,"
 				  +"`leave_end_time` DATETIME(1) NOT NULL,"
 				  +"`category` VARCHAR(30) NOT NULL,"
-				  +"`total` FLOAT NOT NULL"
-				  +"`place` VARCHAR(20) NOT NULL,"
+				  +"`total` FLOAT NOT NULL,"
+				  +"`place` VARCHAR(20) NOT NULL"
 				  +")CHARSET=utf8";
 		String dropDayPersonTable = "DROP TABLE if exists dayperson";
 		String createdaypersonTable = "CREATE TABLE if not exists `dayperson` ("
@@ -114,7 +114,7 @@ public class DatabaseOperate {
 		String dropLeaveDayTable = "DROP TABLE if exists leaves_day";
 		String createLeaveDayTable = "CREATE TABLE if not exists `leaves_day` ("
 				  +"`name` VARCHAR(20) NOT NULL,"
-				  +"`	` VARCHAR(40) NOT NULL,"
+				  +"`team` VARCHAR(40) NOT NULL,"
 				  +"`leave_start_time` DATETIME(1) NOT NULL,"
 				  +"`leave_end_time` DATETIME(1) NOT NULL,"
 				  +"`dateDay` DATETIME(1) NOT NULL,"
@@ -474,17 +474,19 @@ public class DatabaseOperate {
 				pom.personName = rs.getString(1);
 				pom.place = rs.getString(2);
 				pom.team = rs.getString(3);
-				pom.startTime = rs.getString(4);
-				pom.endTime = rs.getString(5);
-				pom.onsite = rs.getInt(6);
-				pom.actuallyWorkdayNum = rs.getFloat(7);
-				pom.workdayWorkNum = rs.getFloat(8);
-				pom.shouldWorkNum = rs.getFloat(9);
-				pom.absenceDayNum = rs.getFloat(10);
-				pom.weekendWorkNum = rs.getFloat(11);
-				pom.totalOverTime = rs.getFloat(12);
-				pom.normalOverTime = rs.getFloat(13);
-				pom.weekendOverTime = rs.getFloat(14);
+				pom.module = rs.getString(4);
+				pom.leader = rs.getString(5);
+				pom.startTime = rs.getString(6);
+				pom.endTime = rs.getString(7);
+				pom.onsite = rs.getInt(8);
+				pom.actuallyWorkdayNum = rs.getFloat(9);
+				pom.workdayWorkNum = rs.getFloat(10);
+				pom.shouldWorkNum = rs.getFloat(11);
+				pom.absenceDayNum = rs.getFloat(12);
+				pom.weekendWorkNum = rs.getFloat(13);
+				pom.totalOverTime = rs.getFloat(14);
+				pom.normalOverTime = rs.getFloat(15);
+				pom.weekendOverTime = rs.getFloat(16);
 				arrayList.add(pom);
 			}
 		} catch (SQLException e) {

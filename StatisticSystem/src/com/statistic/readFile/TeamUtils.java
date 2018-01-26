@@ -27,7 +27,6 @@ public class TeamUtils{
 			caculateAve();
 			insert();
 		}
-		dbo.closeDatabase();
 	}
 	public void getTeam(String place) {
 		String sql;

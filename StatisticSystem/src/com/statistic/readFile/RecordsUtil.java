@@ -19,6 +19,7 @@ public class RecordsUtil {
 	public String file_name;
 	public int category =-1;
 	public String dateDay;//具体到天
+	public boolean isInsert = false;
 
 	public void clear() {
 		serial = null;
@@ -32,6 +33,7 @@ public class RecordsUtil {
 		description = null;
 		file_name = null;
 		category = -1;
+		isInsert = false;
 	}
 	public void getDataAndTime() {
 		DateFormat formatDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

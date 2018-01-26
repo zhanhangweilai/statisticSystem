@@ -25,7 +25,6 @@ public class ReadOriginFile {
 	private final String DATEMODIFY = "日期修改";
 	
 	
-	
 	/**
 	 * 区分不同类型的文件并读取
 	 * @param filePath 要读取的文件路径
@@ -39,7 +38,7 @@ public class ReadOriginFile {
 		if ("xlsx".equals(suffix)) {
 			readXLSXExcel(file);
 		} else if ("csv".equals(suffix)) {
-			readCVSFile(file);
+			//readCVSFile(file);
 		} else if ("txt".equals(suffix)){
 			//readTXT(file);
 		} else {
@@ -119,7 +118,7 @@ public class ReadOriginFile {
 			if (fileName.contains(PERSONFILE)) {
 			    personUtils.InsertSql(workBook);
 			} else if (fileName.contains(LEAVES)) {
-				leaveUtils.InsertSql(workBook);
+				leaveUtils.InsertSql(workBook, fileName);
 			} 
 			inputStrem.close();
 		} catch (IOException e) {
@@ -141,6 +140,7 @@ public class ReadOriginFile {
 			String line;
 			final String SERIAL = "序号";
 			final String IDCARD = "卡号";
+			boolean isInsert = false;
 			String fileName = file.getName();
 			RecordsUtil recordsUtils  = new RecordsUtil();
 			String[] result;
@@ -187,10 +187,10 @@ public class ReadOriginFile {
 						break;
 					}
 				}
-				String sql = "insert into records (`serial`, `id_card`, `name`, `team_name`, `date`, `dateDay`, `site`, `pass`, `description`, `file_name`, `category`)"
+				String sql = "insert into records (`serial`, `id_card`, `name`, `team_name`, `date`, `dateDay`, `site`, `pass`, `description`, `file_name`, `insert`, `category`)"
 						+"values('"+recordsUtils.serial+"','"+recordsUtils.id_card+"','"+recordsUtils.name+"','"+recordsUtils.team_name+"','"+recordsUtils.datetime+"','"
 						+recordsUtils.dateDay+"','"+recordsUtils.site+"','"+recordsUtils.pass+"','"+recordsUtils.description+"','"+recordsUtils.file_name+"',"
-						+recordsUtils.category+")";
+						+isInsert+","+recordsUtils.category+")";
 				dbo.insert(sql);
 			}
 			bufferReader.close();

@@ -5,10 +5,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class PersonUtils {
-	public  String name;		//姓名
-	public  String place;		//工作地点
-	public  String team;		//所在组
-	public  boolean onsite; 	//是否onsite
+	public String name;		//姓名
+	public String place;		//工作地点
+	public String team;		//所在组
+	public String module; //负责的模块
+	public String leader; //负责人
+	public boolean onsite; 	//是否onsite
 	public String start_time; 	//开始刷卡时间
 	public String end_time;	//结束刷卡时间
 	public void  clear() {
@@ -45,12 +47,18 @@ public class PersonUtils {
 						team = result;
 						break;
 					case 4: 
-						start_time = result;
+						module = result;
 						break;
 					case 5: 
-						end_time = result;
+						leader = result;
 						break;
 					case 6: 
+						start_time = result;
+						break;
+					case 7: 
+						end_time = result;
+						break;
+					case 8: 
 						if ("否".equals(result)) {
 							onsite = false;
 						} else {
@@ -63,8 +71,8 @@ public class PersonUtils {
 				continue;
 			}
 			System.out.println(sql);
-			sql = "insert into person (`name`, `place`, `team`, `onsite`, `start_time`, `end_time`)"
-					+"values('"+name+"','"+place+"','"+team+"',"+onsite+",'"+start_time+"','"
+			sql = "insert into person (`name`, `place`, `team`, `onsite`, `module`, `leader`, `start_time`, `end_time`)"
+					+"values('"+name+"','"+place+"','"+team+"',"+onsite+",'"+module+"','"+leader+"','"+start_time+"','"
 					+end_time+"')";
 			dbo.insert(sql);
 			}

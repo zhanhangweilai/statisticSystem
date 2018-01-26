@@ -5,6 +5,8 @@ public class PersonOfMonth {
 	public String personName;
 	public String place;
 	public String team;
+	public String module;
+	public String leader;
 	public String startTime;
 	public String endTime;
 	public int onsite;

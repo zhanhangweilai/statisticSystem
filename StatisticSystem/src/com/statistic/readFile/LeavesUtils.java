@@ -28,12 +28,28 @@ public class LeavesUtils {
 		team = null;
 		total = 0.0f;
 	}
-	public void InsertSql(XSSFWorkbook workBook) {
+	
+	private String getPlace(String fileName) {
+		String place = "北京";
+		if (fileName.contains("北京")){
+			place = "北京";
+		} else if (fileName.contains("南京")) {
+			place = "南京";
+		} else if (fileName.contains("上海")) {
+			place = "上海";
+		} else if (fileName.contains("深圳")) {
+			place = "深圳";
+		} 
+		
+		return place;
+	}
+	public void InsertSql(XSSFWorkbook workBook, String fileName) {
 		String sql = null;
 		String mSql = null;
 		float totalHour = 0.00f;
 		float totalDay = 0;
 		int daycategory = 0;
+		String place = getPlace(fileName);
 		DatabaseOperate dbo = DatabaseOperate.getInstance();
 		//dbo.connectDatabase();
 		ArrayList <Date> arrayList = new ArrayList<>();
@@ -75,9 +91,9 @@ public class LeavesUtils {
 					continue;
 				}
 				System.out.println(name+","+leave_start_time+","+leave_end_time);
-				sql = "insert into leaves (`name`, `team`, `leave_start_time`, `leave_end_time`, `category`, `total`)"
+				sql = "insert into leaves (`name`, `team`, `leave_start_time`, `leave_end_time`, `category`, `place`, `total`)"
 						+"values('"+name+"','"+team+"','"+leave_start_time+"','"+leave_end_time+"','"
-						+category+"',"+total+")";
+						+category+"','"+place+"',"+total+")";
 				dbo.insert(sql);
 				arrayList = TimeUtil.getAllDateBetween(TimeUtil.StringToDate(leave_start_time),
 						TimeUtil.StringToDate(leave_end_time));
@@ -98,9 +114,9 @@ public class LeavesUtils {
 						totalHour = 0.0f;
 						totalDay = 0.0f;
 					}
-					mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `daycategory`)"
+					mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `place`, `daycategory`)"
 							+"values('"+name+"','"+team+"','"+leave_start_time+"','"+leave_end_time+"','"+TimeUtil.DateToString(arrayList.get(0))+"','"
-							+category+"',"+totalHour+","+totalDay+","+daycategory+")";
+							+category+"',"+totalHour+","+totalDay+",'"+place+"',"+daycategory+")";
 					dbo.insert(mSql);
 				} else {
 					for (int z = 0; z < arrayList.size(); z++) {
@@ -123,9 +139,9 @@ public class LeavesUtils {
 							} else {
 								totalDay = 0.5f;
 							}
-							mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `daycategory`)"
+							mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `place`, `daycategory`)"
 									+"values('"+name+"','"+team+"','"+leave_start_time+"','"+TimeUtil.getEndWorkTime(arrayList.get(z))+"','"+TimeUtil.DateToString(arrayList.get(z))+"','"
-									+category+"',"+totalHour+","+totalDay+","+daycategory+")";
+									+category+"',"+totalHour+","+totalDay+",'"+place+"',"+daycategory+")";
 						} else if (TimeUtil.getDateWithoutTime(leave_end_time).equals(arrayList.get(z))) {
 							totalHour = TimeUtil.getHour(TimeUtil.StringToDate(TimeUtil.getStartWorkTime(arrayList.get(z))), 
 									TimeUtil.StringToDate(leave_end_time));
@@ -137,15 +153,15 @@ public class LeavesUtils {
 							} else {
 								totalDay = 0.5f;
 							}
-							mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `daycategory`)"
+							mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `place`, `daycategory`)"
 									+"values('"+name+"','"+team+"','"+TimeUtil.getStartWorkTime(arrayList.get(z))+"','"+leave_end_time+"','"+TimeUtil.DateToString(arrayList.get(z))+"','"
-									+category+"',"+totalHour+","+totalDay+","+daycategory+")";
+									+category+"',"+totalHour+","+totalDay+",'"+place+"',"+daycategory+")";
 						} else {
 							totalHour = 8.0f;
 							totalDay = 1.0f;
-							mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `daycategory`)"
+							mSql = "insert into leaves_day (`name`, `team`, `leave_start_time`, `leave_end_time`, `dateDay`,`category`, `total_hour`, `total_day`, `place`, `daycategory`)"
 									+"values('"+name+"','"+team+"','"+TimeUtil.getStartWorkTime(arrayList.get(z))+"','"+TimeUtil.getEndWorkTime(arrayList.get(z))+"','"+TimeUtil.DateToString(arrayList.get(z))+"','"
-									+category+"',"+totalHour+","+totalDay+","+daycategory+")";
+									+category+"',"+totalHour+","+totalDay+",'"+place+"',"+daycategory+")";
 						}
 						
 						dbo.insert(mSql);
