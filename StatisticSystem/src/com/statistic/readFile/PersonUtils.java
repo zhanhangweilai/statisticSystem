@@ -25,7 +25,7 @@ public class PersonUtils {
 		String sql = null;
 		DatabaseOperate dbo = DatabaseOperate.getInstance();
 		System.out.println(3);
-		//dbo.connectDatabase();
+		dbo.connectDatabase();
 		for (int numSheet = 0; numSheet < workBook.getNumberOfSheets(); numSheet++) {
 		XSSFSheet xssfSheet = workBook.getSheetAt(numSheet);
 		for (int i = 0; i<= xssfSheet.getLastRowNum(); i++) {
@@ -67,13 +67,15 @@ public class PersonUtils {
 						break;
 				}
 			}
-			if (null == name) {
+			System.out.println("name ="+name);
+			if (null == name || "".equals(name)||"null".equals(name)) {
+				System.out.println("countinue");
 				continue;
 			}
-			System.out.println(sql);
 			sql = "insert into person (`name`, `place`, `team`, `onsite`, `module`, `leader`, `start_time`, `end_time`)"
 					+"values('"+name+"','"+place+"','"+team+"',"+onsite+",'"+module+"','"+leader+"','"+start_time+"','"
 					+end_time+"')";
+			System.out.println(sql);
 			dbo.insert(sql);
 			}
 		}

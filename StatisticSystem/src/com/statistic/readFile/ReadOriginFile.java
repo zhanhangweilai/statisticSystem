@@ -1,15 +1,12 @@
 package com.statistic.readFile;
 
-import java.awt.image.BufferedImageFilter;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +37,7 @@ public class ReadOriginFile {
 		} else if ("csv".equals(suffix)) {
 			readCVSFile(file);
 		} else if ("txt".equals(suffix)){
-			readTXT(file);
+			//readTXT(file);
 		} else {
 			readCVSFile(file);
 		}
@@ -173,7 +170,8 @@ public class ReadOriginFile {
 					recordsUtils.datetime =  result[2];
 					recordsUtils.file_name = fileName;
 				} else {
-					System.out.println("Original file isn't a standard file");
+					System.out.println("line isn't a standard line");
+					System.out.println("line="+line);
 					System.out.println("file="+file.getName());
 					continue;
 				}

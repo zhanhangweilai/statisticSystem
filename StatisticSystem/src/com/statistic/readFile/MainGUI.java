@@ -38,12 +38,13 @@ public class MainGUI {
 				}
 				System.out.println("readAllComplete");
 				oneDay.statisticPersonOfDay();
+				ModifyRecords mr = new ModifyRecords();
+				mr.getExceptionData();
+				oneDay.statisticPersonOfDay();
 				smp.processMonthPerson();
 				tu.statisticTeam("±±¾©"); 
 				System.out.println("ProcessComplete");
 				writeFile.mainWrite();
-				ModifyRecords mr = new ModifyRecords();
-				mr.getExceptionData();
 				WriteCVS  writeCVS = new WriteCVS();
 				writeCVS.writeData();
 				dbo.closeDatabase();

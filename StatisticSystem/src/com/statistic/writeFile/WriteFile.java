@@ -28,7 +28,7 @@ import bean.TeamBean;
 
 public class WriteFile {
 	
-	private String directorFile = "E:/StatisticsSystem/ProcessedFile/a.xlsx";
+	private String directorFile = "E:/StatisticsSystem/ProcessedFile/×Ü½á±í.xlsx";
 	private XSSFWorkbook mXSSFWorkbook;
 	private XSSFSheet mXSSFSheet1;
 	private XSSFSheet mXSSFSheet2;

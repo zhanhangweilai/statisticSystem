@@ -28,6 +28,7 @@ public class DatabaseOperate {
 	private final String user = "root";
 	private final String password = "lihang123";
 	private Connection con;
+	private PreparedStatement psmt;
 	
 	private static DatabaseOperate instance = new DatabaseOperate();
 	private DatabaseOperate() {}
@@ -65,7 +66,7 @@ public class DatabaseOperate {
 				  +" `place` VARCHAR(20) NOT NULL,"
 				  +" `team` VARCHAR(20) NOT NULL,"
 				  +" `onsite` TINYINT NOT NULL,"
-				  +" `module` VARCHAR(20) NOT NULL,"
+				  +" `module` VARCHAR(50) NOT NULL,"
 				  +" `leader` VARCHAR(20) NOT NULL,"
 				  +" `start_time` DATE NOT NULL,"
 				  +" `end_time` DATE NOT NULL,"

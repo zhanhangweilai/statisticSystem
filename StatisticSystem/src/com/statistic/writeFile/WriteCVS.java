@@ -14,6 +14,7 @@ import com.statistic.time.TimeUtil;
 public class WriteCVS {
 	private DatabaseOperate dbo = DatabaseOperate.getInstance();
 	private String path = "E:/StatisticsSystem/ProcessedFile/org"; 
+	private String insertPath ="E:/StatisticsSystem/ProcessedFile";
 	public void writeData() {
 		String queryRecords = "select distinct(file_name) from records";
 		ArrayList<String> fileList = dbo.queryString(queryRecords);
@@ -21,7 +22,37 @@ public class WriteCVS {
 			if (null != fileName && !"".equals(fileName) && !"null".equals(fileName))
 			createCSV(fileName);
 		}
+		getInsertRecords();
 		System.out.println("writeComplete");
+	}
+	
+	private void getInsertRecords() {
+		String sql =  "select * from records where records.insert = 1";
+		BufferedWriter writer = null;
+		ArrayList<RecordsUtil> rowList = new ArrayList<RecordsUtil>();
+		rowList = dbo.queryRecords(sql);
+		File csvFile = null;
+		csvFile = new File(insertPath,"insert.csv");
+		File parent = csvFile.getParentFile();
+		if (parent != null && !parent.exists()) {
+			parent.mkdirs();
+		}
+		try {
+			csvFile.createNewFile();
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile),"utf-8"), 1024);
+			if (rowList.size() > 0) {
+				for (RecordsUtil ru: rowList) {
+					writer.write(writeRow(ru)+", " + ru.file_name);
+					writer.newLine();
+					writer.flush();
+				}
+			}
+			
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void createCSV(String fileName) {
@@ -48,7 +79,6 @@ public class WriteCVS {
 			csvFile.createNewFile();
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile),"utf-8"), 1024);
 			if (headList.size() > 0) {
-				//writer.newLine();
 				for (String str: headList) {
 					stringRow += str;
 				}

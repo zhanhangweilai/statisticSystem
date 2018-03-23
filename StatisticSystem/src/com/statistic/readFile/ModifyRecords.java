@@ -14,6 +14,7 @@ public class ModifyRecords {
 	private DatabaseOperate dbo = DatabaseOperate.getInstance();
 	
 	public void getExceptionData() {
+		dbo.connectDatabase();
 		ArrayList<ModifyRecordsBean> arrayList = new ArrayList<>();
 		String sql = "select dayperson.name, dayperson.work_time, dayperson.dateDay from dayperson, person where dayperson.name = person.name "
 				+ " and dayperson.exception = 1 and dayperson.category = 1 and dayperson.work_time < 9 and person.onsite = 0 and person.place = '北京'";
@@ -124,52 +125,157 @@ public class ModifyRecords {
 						System.out.println("insertRecords3="+insertRecords);
 						dbo.insert(insertRecords);
 					} else {
-						queryRecords = "select distinct(id_card) from records where name = '"+mdr.name+"'";
-						ru.id_card = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select distinct(site) from records where name = '"+mdr.name+"'";
-						ru.site = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select distinct(team_name) from records where name = '"+mdr.name+"'";
-						ru.team_name = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select distinct(pass) from records where name = '"+mdr.name+"'";
-						ru.pass = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select distinct(site) from records where name = '"+mdr.name+"'";
-						ru.site = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select serial from records where dateDay = '"+mdr.dateDay+"'";
-						ru.serial = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select description from records where dateDay = '"+mdr.dateDay+"'";
-						ru.description = dbo.queryString(queryRecords).get(0);
-						queryRecords = "select category from records where dateDay = '"+mdr.dateDay+"'";
-						ru.category = dbo.queryInt(queryRecords);
-						ru.dateDay = TimeUtil.DateToString(mdr.dateDay);
-						ru.name = mdr.name;
-						queryRecords = "select distinct(file_name) from records where dateDay = '"+TimeUtil.DateToString(mdr.dateDay)+"' and file_name like '%BeiJing%'";
-						ArrayList<String> fileList = dbo.queryString(queryRecords);
-						String strDate = TimeUtil.DateToStringWithoutTime1(mdr.dateDay);
-						for (String fileName: fileList) {
-							if (fileName.contains(strDate)) {
-								ru.file_name = fileName;
-								System.out.println("fileName = "+fileName);
-								break;
+						ArrayList<String> recordsList = new ArrayList<String>();
+						String place ;
+						queryRecords = "select * from records where name = '"+mdr.name+"'";
+						recordsList = dbo.queryString(queryRecords);
+						if (recordsList.size() > 0) {
+							ru.id_card = dbo.queryString(queryRecords).get(0);
+							queryRecords = "select distinct(site) from records where name = '"+mdr.name+"'";
+							ru.site = dbo.queryString(queryRecords).get(0);
+							queryRecords = "select distinct(team_name) from records where name = '"+mdr.name+"'";
+							ru.team_name = dbo.queryString(queryRecords).get(0);
+							queryRecords = "select distinct(pass) from records where name = '"+mdr.name+"'";
+							ru.pass = dbo.queryString(queryRecords).get(0);
+							queryRecords = "select distinct(site) from records where name = '"+mdr.name+"'";
+							ru.site = dbo.queryString(queryRecords).get(0);
+						} else {
+							RecordsUtil recordsUtil = noRecords(mdr.name);
+							if (recordsUtil != null) {
+								ru.id_card = recordsUtil.id_card ;
+								ru.site = recordsUtil.site;
+								ru.team_name = recordsUtil.team_name;
+								ru.pass = recordsUtil.pass;
+								ru.site = recordsUtil.site;
+								ru.description = recordsUtil.description;
 							}
 						}
-						String startTime = TimeUtil.getRandomWorkStartTime(mdr.dateDay);
-						String endTime = TimeUtil.getRandomWorkEndTime(mdr.dateDay);
-						insertRecords = "insert into records (`serial`, `id_card`, `name`, `team_name`, `date`, `dateDay`, `site`, `pass`, `description`, `file_name`, `insert`, `category`)"
-								+"values('"+ru.serial+"','"+ru.id_card+"','"+ru.name+"','"+ru.team_name+"','"+startTime+"','"
-								+ru.dateDay+"','"+ru.site+"','"+ru.pass+"','"+ru.description+"','"+ru.file_name+"',"
-								+isInsert+","+ru.category+")";
-						System.out.println("insertRecords2……="+insertRecords);
-						dbo.insert(insertRecords);
+						place = getPlace(mdr.name);
+						if (place != null && !"other".equals(place)) {
+							queryRecords = "select serial from records where dateDay = '"+mdr.dateDay+"'"
+									+ " and file_name like '%"+place+"%'";
+							recordsList =  dbo.queryString(queryRecords);
+							if (recordsList != null && recordsList.size() > 0) {
+								ru.serial = dbo.queryString(queryRecords).get(0);
+							} else {
+								queryRecords = "select serial from records where file_name like '%"+place+"%'";
+								recordsList =  dbo.queryString(queryRecords);
+								if (recordsList != null && recordsList.size() > 0) {
+									ru.serial = dbo.queryString(queryRecords).get(0);
+								} 
+							}
+							queryRecords = "select category from records where dateDay = '"+mdr.dateDay+"'";
+							ru.category = dbo.queryInt(queryRecords);
 						
-						insertRecords = "insert into records (`serial`, `id_card`, `name`, `team_name`, `date`, `dateDay`, `site`, `pass`, `description`, `file_name`, `insert`, `category`)"
-								+"values('"+ru.serial+"','"+ru.id_card+"','"+ru.name+"','"+ru.team_name+"','"+endTime+"','"
-								+ru.dateDay+"','"+ru.site+"','"+ru.pass+"','"+ru.description+"','"+ru.file_name+"',"
-								+isInsert+","+ru.category+")";
-						dbo.insert(insertRecords);
+							ru.dateDay = TimeUtil.DateToString(mdr.dateDay);
+							ru.name = mdr.name;
+							queryRecords = "select distinct(file_name) from records where dateDay = '"+TimeUtil.DateToString(mdr.dateDay)+"' and file_name like '%"+place+"%'";
+							ArrayList<String> fileList = dbo.queryString(queryRecords);
+							String strDate = TimeUtil.DateToStringWithoutTime1(mdr.dateDay);
+							for (String fileName: fileList) {
+								if (fileName.contains(strDate)) {
+									ru.file_name = fileName;
+									System.out.println("fileName = "+fileName);
+									break;
+								}
+							}
+							String startTime = TimeUtil.getRandomWorkStartTime(mdr.dateDay);
+							String endTime = TimeUtil.getRandomWorkEndTime(mdr.dateDay);
+							insertRecords = "insert into records (`serial`, `id_card`, `name`, `team_name`, `date`, `dateDay`, `site`, `pass`, `description`, `file_name`, `insert`, `category`)"
+									+"values('"+ru.serial+"','"+ru.id_card+"','"+ru.name+"','"+ru.team_name+"','"+startTime+"','"
+									+ru.dateDay+"','"+ru.site+"','"+ru.pass+"','"+ru.description+"','"+ru.file_name+"',"
+									+isInsert+","+ru.category+")";
+							System.out.println("insertRecords2……="+insertRecords);
+							dbo.insert(insertRecords);
+							
+							insertRecords = "insert into records (`serial`, `id_card`, `name`, `team_name`, `date`, `dateDay`, `site`, `pass`, `description`, `file_name`, `insert`, `category`)"
+									+"values('"+ru.serial+"','"+ru.id_card+"','"+ru.name+"','"+ru.team_name+"','"+endTime+"','"
+									+ru.dateDay+"','"+ru.site+"','"+ru.pass+"','"+ru.description+"','"+ru.file_name+"',"
+									+isInsert+","+ru.category+")";
+							dbo.insert(insertRecords);
+						} else {
+							System.out.println(mdr.name+" "+mdr.dateDay +"的数据无法插入" );
+						}
 					}
 				}
 			}
 		}
 	}
 
+	private String getPlace(String name) {
+		String  place = null;
+		String sql =  "select place from person where name = '"+name+"'";
+		ArrayList<String> list = dbo.queryString(sql);
+		if (list.size() > 0) {
+		 place = list.get(0);
+		}
+		
+		if (place == null) {
+			System.out.println("此同事无工作地址");
+			return null;
+		} 
+		switch (place) {
+			case "北京":
+				return "BeiJing";
+			case "南京":
+				return "NJ";
+			case "上海":
+				return "SH";
+			case "深圳":
+				return "Shenzhen";
+			default:
+				System.out.println("非正常工作地址");
+				return "other";
+		}
+	}
+	private RecordsUtil noRecords(String name) {
+		String  place = null;
+		String sql =  "select place from person where name = '"+name+"'";
+		ArrayList<RecordsUtil> recordsList = null;
+		RecordsUtil recordsUtil = new RecordsUtil();
+		ArrayList<String> list = dbo.queryString(sql);
+		String queryRecords;
+		if (list.size() > 0) {
+		 place = list.get(0);
+		}
+		
+		if (place == null) {
+			System.out.println(name+"同学工作地址不正确无法插入数据");
+			return null;
+		} 
+		switch (place) {
+			case "北京":
+				queryRecords = "select * from records where file_name like %BeiJing%";
+				recordsList = dbo.queryRecords(queryRecords);
+				break;
+			case "南京":
+				queryRecords = "select * from records where file_name like %NJ%";
+				recordsList = dbo.queryRecords(queryRecords);
+				break;
+			case "上海":
+				queryRecords = "select * from records where file_name like %SH%";
+				recordsList = dbo.queryRecords(queryRecords);
+				break;
+			case "深圳":
+				queryRecords = "select * from records where file_name like %Shenzhen%";
+				recordsList = dbo.queryRecords(queryRecords);
+				break;
+			default:
+				break;
+		}
+		if (recordsList != null && recordsList.size() > 0) {
+			recordsUtil = recordsList.get(0);
+			//若打卡记录中有team，则从person表中查询此人的team
+			if (recordsUtil.team_name != null && !"".equals(recordsUtil.team_name) && "null".equals(recordsUtil.team_name)) {
+				String queryTeam = "select team from person where name = '"+name+"'";
+				list = dbo.queryString(queryTeam);
+				if (list.size() > 0) {
+					recordsUtil.team_name = list.get(0);
+				}
+			}
+			return recordsUtil;
+		} else {
+			return null;
+		}
+	}
 }

@@ -78,6 +78,8 @@ public class LeavesUtils {
 							break;
 						case 3: 
 							leave_start_time = result;
+							System.out.println("result="+result);
+							System.out.println("leave_start_time="+leave_start_time);
 							break;
 						case 4: 
 							leave_end_time = result;
