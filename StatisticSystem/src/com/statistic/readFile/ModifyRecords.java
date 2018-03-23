@@ -17,7 +17,7 @@ public class ModifyRecords {
 		dbo.connectDatabase();
 		ArrayList<ModifyRecordsBean> arrayList = new ArrayList<>();
 		String sql = "select dayperson.name, dayperson.work_time, dayperson.dateDay from dayperson, person where dayperson.name = person.name "
-				+ " and dayperson.exception = 1 and dayperson.category = 1 and dayperson.work_time < 9 and person.onsite = 0 and person.place = '北京'";
+				+ " and dayperson.exception = 1 and dayperson.category = 1 and dayperson.work_time < 9 and person.onsite = 0";
 				
 		String sqlModify;
 		String queryRecords;
@@ -130,6 +130,7 @@ public class ModifyRecords {
 						queryRecords = "select * from records where name = '"+mdr.name+"'";
 						recordsList = dbo.queryString(queryRecords);
 						if (recordsList.size() > 0) {
+							queryRecords = "select distinct(id_card) from records where name = '"+mdr.name+"'";
 							ru.id_card = dbo.queryString(queryRecords).get(0);
 							queryRecords = "select distinct(site) from records where name = '"+mdr.name+"'";
 							ru.site = dbo.queryString(queryRecords).get(0);
@@ -137,8 +138,8 @@ public class ModifyRecords {
 							ru.team_name = dbo.queryString(queryRecords).get(0);
 							queryRecords = "select distinct(pass) from records where name = '"+mdr.name+"'";
 							ru.pass = dbo.queryString(queryRecords).get(0);
-							queryRecords = "select distinct(site) from records where name = '"+mdr.name+"'";
-							ru.site = dbo.queryString(queryRecords).get(0);
+							queryRecords = "select distinct(description) from records where name = '"+mdr.name+"'";
+							ru.description = dbo.queryString(queryRecords).get(0);
 						} else {
 							RecordsUtil recordsUtil = noRecords(mdr.name);
 							if (recordsUtil != null) {
@@ -245,19 +246,19 @@ public class ModifyRecords {
 		} 
 		switch (place) {
 			case "北京":
-				queryRecords = "select * from records where file_name like %BeiJing%";
+				queryRecords = "select * from records where file_name like '%BeiJing%'";
 				recordsList = dbo.queryRecords(queryRecords);
 				break;
 			case "南京":
-				queryRecords = "select * from records where file_name like %NJ%";
+				queryRecords = "select * from records where file_name like '%NJ%'";
 				recordsList = dbo.queryRecords(queryRecords);
 				break;
 			case "上海":
-				queryRecords = "select * from records where file_name like %SH%";
+				queryRecords = "select * from records where file_name like '%SH%'";
 				recordsList = dbo.queryRecords(queryRecords);
 				break;
 			case "深圳":
-				queryRecords = "select * from records where file_name like %Shenzhen%";
+				queryRecords = "select * from records where file_name like '%Shenzhen%'";
 				recordsList = dbo.queryRecords(queryRecords);
 				break;
 			default:
@@ -266,7 +267,7 @@ public class ModifyRecords {
 		if (recordsList != null && recordsList.size() > 0) {
 			recordsUtil = recordsList.get(0);
 			//若打卡记录中有team，则从person表中查询此人的team
-			if (recordsUtil.team_name != null && !"".equals(recordsUtil.team_name) && "null".equals(recordsUtil.team_name)) {
+			if (recordsUtil.team_name != null && !"".equals(recordsUtil.team_name) && !"null".equals(recordsUtil.team_name)) {
 				String queryTeam = "select team from person where name = '"+name+"'";
 				list = dbo.queryString(queryTeam);
 				if (list.size() > 0) {
