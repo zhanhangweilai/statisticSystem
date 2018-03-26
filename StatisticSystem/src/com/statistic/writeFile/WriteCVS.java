@@ -67,7 +67,7 @@ public class WriteCVS {
 			System.out.println("headList.size ="+headList.size());
 		}
 		
-		String sql =  "select * from records where file_name = '"+fileName+"'";
+		String sql =  "select * from records where file_name = '"+fileName+"' and records.insert = 0 ";
 		rowList = dbo.queryRecords(sql);
 		File csvFile = null;
 		csvFile = new File(path,fileName);
